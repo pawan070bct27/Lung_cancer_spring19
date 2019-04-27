@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
 
-Created on Sat Apr 20 17:04:34 2019
 
 @author: Pawan
 """
@@ -15,18 +12,21 @@ from keras import backend as K
 import numpy as np
 
 
-
-xy_train_data = np.load('C:\\Users\\Avishkar\\Desktop\\lung_caner\\Lung_Data_for_Pawan\\train_xy.npy')
-xy_testing_data = np.load('C:\\Users\\Avishkar\\Desktop\\lung_caner\\Lung_Data_for_Pawan\\test_xy.npy')
-
+#Training data of xy label
+train_xy = np.load('C:\\Users\\PAWAN\\Desktop\\Lung_Data_for_Pawan-20190427T212846Z-001\\Lung_Data_for_Pawan\\train_xy.npy')
 
 
+#Testing_data for xy label
+train_label_xy = np.load('C:\\Users\\PAWAN\\Desktop\\Lung_Data_for_Pawan-20190427T212846Z-001\\Lung_Data_for_Pawan\\train_label_xy.npy')
 
-print("data ndim: ", xy_train_data.ndim)
 
-print("data shape:", xy_train_data.shape)
 
-print("data size: ", xy_train_data.size)
+
+print("data ndim: ", train_xy.ndim)
+
+print("data shape:", train_xy.shape)
+
+print("data size: ", train_xy.size)
 
 
 
@@ -34,7 +34,7 @@ print("data size: ", xy_train_data.size)
 
 #Set the initial parameters
 batch_size = 128
-nb_classes = 6
+nb_classes = 2
 nb_epoch = 6
 
 img_rows, img_cols = 56, 56         # input image dimensions
@@ -54,19 +54,19 @@ def init_weights(shape, name=None):
 
 if K.image_dim_ordering() == 'th':
     # For Theano backend
-    xy_train_data = xy_train_data.reshape(xy_train_data.shape[0], 1, img_rows, img_cols)
-    xy_testing_data = xy_testing_data.reshape(xy_testing_data.shape[0], 1, img_rows, img_cols)
+    train_xy = train_xy.reshape(train_xy.shape[0], 1, img_rows, img_cols)
+    train_label_xy = train_label_xy.reshape(train_label_xy.shape[0], 1, img_rows, img_cols)
     input_shape = (1, img_rows, img_cols)
 else:
     # For TensorFlow backend
-    xy_train_data = xy_train_data.reshape(xy_train_data.shape[0], img_rows, img_cols,1)
-    xy_testing_data = xy_testing_data.reshape(xy_testing_data, img_rows, img_cols, 1)
+    train_xy = train_xy.reshape(train_xy.shape[0], img_rows, img_cols,1)
+    train_label_xy = train_label_xy.reshape(train_label_xy, img_rows, img_cols, 1)
     input_shape = (img_rows, img_cols, 1)
 
-xy_train_data = xy_train_data.astype('float32') / 255.
-xy_testing_data = xy_testing_data.astype('float32') / 255.
-xy_train_data = np_utils.to_categorical(xy_train_data, nb_classes)
-xy_testing_data = np_utils.to_categorical(xy_testing_data, nb_classes)
+train_xy = train_xy.astype('float32') / 255.
+train_label_xy = train_label_xy.astype('float32') / 255.
+train_xy = np_utils.to_categorical(train_xy, nb_classes)
+train_label_xy = np_utils.to_categorical(train_label_xy, nb_classes)
 
 
 # Convolutional model
@@ -93,7 +93,7 @@ model.add(Dense(625, activation='relu'))
 model.add(Dropout(prob_drop_hidden))
 
 # fc2 layer
-model.add(Dense(10, activation='softmax'))
+model.add(Dense(2, activation='softmax'))
 
 opt = RMSprop(lr=0.001, rho=0.9)
 model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
@@ -101,6 +101,8 @@ model.summary()
 
 
 # Train
-history = model.fit(xy_train_data, xy_testing_data, nb_epoch=nb_epoch, batch_size=batch_size, shuffle=True, verbose=1)
+history = model.fit(train_xy, train_label_xy, nb_epoch=nb_epoch, batch_size=batch_size, shuffle=True, verbose=1)
 
 
+Lung.py
+Displaying Lung.py.
